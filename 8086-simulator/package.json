@@ -6,7 +6,8 @@
   "scripts": {
     "start": "tsx main.ts",
     "dev": "tsx watch main.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "nasm": "..\\tools\\nasm-2.16.01\\nasm.exe",
+    "compile-asm": "..\\tools\\nasm-2.16.01\\nasm.exe input.asm -o input.o"
   },
   "keywords": [],
   "author": "",
