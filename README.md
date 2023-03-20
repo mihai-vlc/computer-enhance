@@ -3,7 +3,10 @@
 
 ## Commands
 ```sh
-# starts tsx in the watch mode
+# run the application once
+npm run start
+
+# starts tsx in the watch mode for development
 npm run dev
 
 # generates the binary from the input.asm file
