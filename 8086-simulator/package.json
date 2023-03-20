@@ -1,19 +1,24 @@
 {
-  "name": "8086-simulator",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "tsx main.ts",
-    "dev": "tsx watch main.ts",
-    "nasm": "..\\tools\\nasm-2.16.01\\nasm.exe",
-    "compile-asm": "..\\tools\\nasm-2.16.01\\nasm.exe input.asm -o input.o"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@types/node": "^18.15.3",
-    "tsx": "^3.12.5"
-  }
+    "name": "8086-simulator",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "tsx main.ts",
+        "dev": "tsx watch main.ts",
+        "nasm": "..\\tools\\nasm-2.16.01\\nasm.exe",
+        "compile-asm": "..\\tools\\nasm-2.16.01\\nasm.exe input.asm -o input.o",
+        "test": "vitest run",
+        "test:watch": "vitest watch"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@types/node": "^18.15.3",
+        "tsx": "^3.12.5"
+    },
+    "devDependencies": {
+        "vitest": "^0.29.3"
+    }
 }

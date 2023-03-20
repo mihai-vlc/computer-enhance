@@ -1,16 +1,6 @@
 import fs from "fs";
 
-const input = fs.readFileSync("input.o");
-
-for (let i = 0; i < input.length; i += 2) {
-    const data = input.readUint16BE(i);
-    console.log(processInstruction(data));
-    logBinaryData(data);
-}
-
 type Bit = 0 | 1;
-type OpCode = number;
-type Register = number;
 
 // stored as W REG
 enum REG {
@@ -42,13 +32,18 @@ enum RegisterMode {
 }
 
 type Instruction = {
-    opCode: OpCode;
+    type: InstructionType;
     d: Bit;
     w: Bit;
-    mode: RegisterMode;
-    register: Register;
-    rm: Register;
+    mod: RegisterMode;
+    reg: number;
+    rm: number;
 };
+
+enum InstructionType {
+    MOV = 0b100010,
+    INVALID = 0,
+}
 
 // opCode D W  MOD  REG R/M
 // 100010 0 1   11  011 001   = mov cx,bx
@@ -56,16 +51,45 @@ type Instruction = {
 
 function processInstruction(data: number) {
     const instruction: Instruction = {
-        opCode: (data & 0b1111110000000000) >> 10,
+        type: (data & 0b1111110000000000) >> 10,
         d: ((data & 0b0000001000000000) >> 9) as Bit,
         w: ((data & 0b0000000100000000) >> 8) as Bit,
-        mode: (data & 0b0000000011000000) >> 6,
-        register: (data & 0b0000000000111000) >> 3,
+        mod: (data & 0b0000000011000000) >> 6,
+        reg: (data & 0b0000000000111000) >> 3,
         rm: (data & 0b0000000000000111) >> 0,
     };
     return instruction;
 }
 
+function getRegistersForInstruction(instruction: Instruction) {
+    if (instruction.mod == RegisterMode.REG) {
+        const source = (instruction.w << 3) | instruction.reg;
+        const destination = (instruction.w << 3) | instruction.rm;
+
+        return [REG[destination], REG[source]];
+    }
+
+    throw new Error("Unsupported mode: " + instruction.mod);
+}
+
 function logBinaryData(data: number) {
     console.log(data.toString(2).replace(/(\d{8})/, "$1 "));
+}
+
+export function decodeInstructions(input: Buffer): string {
+    let output = "bits 16\n\n";
+
+    for (let i = 0; i < input.length; i += 2) {
+        const data = input.readUint16BE(i);
+        const instruction = processInstruction(data);
+        output += InstructionType[instruction.type].toLowerCase();
+        output += " ";
+        output += getRegistersForInstruction(instruction)
+            .join(", ")
+            .toLowerCase();
+        output += "\n";
+        // logBinaryData(data);
+    }
+
+    return output;
 }
